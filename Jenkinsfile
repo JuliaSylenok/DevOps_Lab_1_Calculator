@@ -1,28 +1,26 @@
+
 pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Restore') {
             steps {
+                echo 'Restoring NuGet packages...'
                 bat 'dotnet restore Lab_1_Calculator.sln'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'dotnet build Lab_1_Calculator.sln --no-restore'
+                echo 'Building the project...'
+                bat 'dotnet build Lab_1_Calculator.sln --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'dotnet test Tests/Tests.csproj --no-build'
+                echo 'Running unit tests...'
+                bat 'dotnet test Tests/Tests.csproj --configuration Release'
             }
         }
     }
@@ -31,7 +29,6 @@ pipeline {
         success {
             echo 'Build and tests completed successfully.'
         }
-
         failure {
             echo 'Build or tests failed.'
         }
